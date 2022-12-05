@@ -50,8 +50,10 @@
     "redux-saga": "1.2.1",
     "rimraf": "3.0.2",
     "sanitize.css": "13.0.0",
+    "sass": "1.56.1",
     "serve": "14.0.1",
     "shelljs": "0.8.5",
+    "socket.io-client": "4.5.4",
     "styled-components": "5.3.5",
     "stylelint": "14.12.0",
     "stylelint-config-recommended": "9.0.0",
@@ -74,12 +76,9 @@
     "lint:fix": "yarn run eslint --fix src",
     "lint:css": "stylelint src/**/*.css",
     "generate": "plop --plopfile internals/generators/plopfile.ts",
-    "cleanAndSetup": "ts-node ./internals/scripts/clean.ts",
     "prettify": "prettier --write",
-    "extract-messages": "i18next-scanner --config=internals/extractMessages/i18next-scanner.config.js"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "extract-messages": "i18next-scanner --config=internals/extractMessages/i18next-scanner.config.js",
+    "prepare": "husky install"
   },
   "browserslist": {
     "production": [
