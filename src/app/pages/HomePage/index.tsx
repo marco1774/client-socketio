@@ -7,7 +7,7 @@ import { selectNomeUtente } from '../Login/slice/selectors';
 import styles from './styles.module.scss';
 
 interface Props {}
-const socket = io('http://localhost:7766');
+const socket = io('https://real-time-try.onrender.com');
 
 export function HomePage(props: Props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
