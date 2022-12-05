@@ -10,11 +10,14 @@ interface Props {
   inputName: string;
   inputPlaceHolder: string;
   utente: string;
+  value: string;
+  setValue: (value) => void;
 }
 
 export function InputRt(props: Props) {
-  const { socket, inputName, inputPlaceHolder, utente } = props;
-  const [value, setValue] = React.useState('');
+  const { socket, inputName, inputPlaceHolder, utente, value, setValue } =
+    props;
+  // const [value, setValue] = React.useState('');
   const [disableInput, setDisableInput] = React.useState({
     disable: false,
     name: '',
