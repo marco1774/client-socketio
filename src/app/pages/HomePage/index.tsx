@@ -7,13 +7,15 @@ import { selectNomeUtente } from '../Login/slice/selectors';
 import styles from './styles.module.scss';
 
 interface Props {}
-const socket = io('https://real-time-try.onrender.com');
+// const socket = io('https://real-time-try.onrender.com');
+const socket = io('http://localhost:7766');
 
 export function HomePage(props: Props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   const [coloreValue, setColoreValue] = React.useState('');
   const [cittaUtenteValue, setCittaUtenteValue] = React.useState('');
+
   const [risposta, setRisposta] = React.useState({
     cittaUtenteValue: '',
     coloreValue: '',
@@ -35,17 +37,22 @@ export function HomePage(props: Props) {
     name: '',
     utente: '',
   });
+  console.log(
+    '🚀 ~ file: index.tsx:40 ~ HomePage ~ utenteFocusField',
+    utenteFocusField,
+  );
 
   React.useEffect(() => {
     socket.on('connect', () => {
       console.log('Server connected: ', socket.id);
     });
     socket.on('ricevo-value', (value, name, utente) => {
-      console.log(value, name, utente);
-      // if (name === inputName) setValue(value);
+      console.log('ricevo-value', value, name, utente);
+      if (name === 'cittaUtente') setCittaUtenteValue(value);
+      if (name === 'colore') setColoreValue(value);
     });
     socket.on('ricevo-focusInput', (data, name, utente) => {
-      console.log(data, name, utente);
+      console.log('ricevo-focusInput', data, name, utente);
       setDisableInput({ disable: data, name });
       setUtenteFocusField({ utente, name });
     });
@@ -56,6 +63,8 @@ export function HomePage(props: Props) {
       socket.off('prova');
       socket.off('input');
       socket.off('focusInput');
+      socket.off('ricevo-value');
+      socket.off('ricevo-focusInput');
     };
   }, []);
 
@@ -64,27 +73,15 @@ export function HomePage(props: Props) {
       <div className={styles.container}>
         <p style={{ color: 'white' }}>Inserisci info...</p>
         <form onSubmit={e => submit(e)}>
-          <InputRt
-            utente={nomeUtente}
-            value={coloreValue}
-            setValue={setColoreValue}
-            socket={socket}
-            inputName={'nomeUtente'}
-            inputPlaceHolder={'scrivi colore'}
+          <Article
+            nomeUtente={nomeUtente}
+            coloreValue={coloreValue}
+            setColoreValue={setColoreValue}
             disableInput={disableInput}
             setUtenteFocusField={setUtenteFocusField}
             utenteFocusField={utenteFocusField}
-          />
-          <InputRt
-            utente={nomeUtente}
-            value={cittaUtenteValue}
-            setValue={setCittaUtenteValue}
-            socket={socket}
-            inputName={'cittaUtente'}
-            inputPlaceHolder={'scrivi città utente'}
-            disableInput={disableInput}
-            setUtenteFocusField={setUtenteFocusField}
-            utenteFocusField={utenteFocusField}
+            cittaUtenteValue={cittaUtenteValue}
+            setCittaUtenteValue={setCittaUtenteValue}
           />
           <input type="submit" value="invia" />
         </form>
@@ -96,6 +93,44 @@ export function HomePage(props: Props) {
           </div>
         )}
       </div>
+    </>
+  );
+}
+
+function Article({
+  nomeUtente,
+  coloreValue,
+  setColoreValue,
+  disableInput,
+  setUtenteFocusField,
+  utenteFocusField,
+  cittaUtenteValue,
+  setCittaUtenteValue,
+}) {
+  return (
+    <>
+      <InputRt
+        utente={nomeUtente}
+        value={coloreValue}
+        setValue={setColoreValue}
+        socket={socket}
+        inputName="colore"
+        inputPlaceHolder={'scrivi colore'}
+        disableInput={disableInput}
+        setUtenteFocusField={setUtenteFocusField}
+        utenteFocusField={utenteFocusField}
+      />
+      <InputRt
+        utente={nomeUtente}
+        value={cittaUtenteValue}
+        setValue={setCittaUtenteValue}
+        socket={socket}
+        inputName="cittaUtente"
+        inputPlaceHolder={'scrivi città utente'}
+        disableInput={disableInput}
+        setUtenteFocusField={setUtenteFocusField}
+        utenteFocusField={utenteFocusField}
+      />
     </>
   );
 }

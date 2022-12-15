@@ -35,10 +35,21 @@ export function InputRt(props: Props) {
     setUtenteFocusField,
     utenteFocusField,
   } = props;
+
   // const [value, setValue] = React.useState('');
 
   // const refInput = React.useRef<HTMLInputElement>(null);
-  console.log('%cInputRt', 'color:purple', inputName);
+  // console.log('%cInputRt', 'color:purple', inputName);
+
+  React.useEffect(() => {
+    return () => {
+      socket.off('connect');
+      socket.off('disconnect');
+      socket.off('prova');
+      socket.off('input');
+      socket.off('focusInput');
+    };
+  }, []);
   return (
     <div
       style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}
