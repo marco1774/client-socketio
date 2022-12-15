@@ -12,52 +12,39 @@ interface Props {
   utente: string;
   value: string;
   setValue: (value) => void;
+  setUtenteFocusField: (a) => void;
+  disableInput: {
+    disable: boolean;
+    name: string;
+  };
+  utenteFocusField: {
+    name: string;
+    utente: string;
+  };
 }
 
 export function InputRt(props: Props) {
-  const { socket, inputName, inputPlaceHolder, utente, value, setValue } =
-    props;
+  const {
+    socket,
+    inputName,
+    inputPlaceHolder,
+    utente,
+    value,
+    setValue,
+    disableInput,
+    setUtenteFocusField,
+    utenteFocusField,
+  } = props;
   // const [value, setValue] = React.useState('');
-  const [disableInput, setDisableInput] = React.useState({
-    disable: false,
-    name: '',
-  });
-  const [utenteFocusField, setUtenteFocusField] = React.useState({
-    name: '',
-    utente: '',
-  });
 
-  const refInput = React.useRef<HTMLInputElement>(null);
-
-  React.useEffect(() => {
-    socket.on('connect', () => {
-      console.log('Server connected: ', socket.id);
-    });
-    socket.emit('prova', 'questa è una prova dal client!!!!');
-    socket.on('ricevo-value', (value, name, utente) => {
-      console.log(value, name, utente);
-      if (name === inputName) setValue(value);
-    });
-    socket.on('ricevo-focusInput', (data, name, utente) => {
-      console.log(data, name, utente);
-      setDisableInput({ disable: data, name });
-      setUtenteFocusField({ utente, name });
-    });
-
-    return () => {
-      socket.off('connect');
-      socket.off('disconnect');
-      socket.off('prova');
-      socket.off('input');
-      socket.off('focusInput');
-    };
-  }, []);
+  // const refInput = React.useRef<HTMLInputElement>(null);
+  console.log('%cInputRt', 'color:purple', inputName);
   return (
     <div
       style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}
     >
       <input
-        ref={refInput}
+        // ref={refInput}
         type="text"
         name={inputName}
         placeholder={inputPlaceHolder}
