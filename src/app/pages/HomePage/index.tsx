@@ -1,16 +1,17 @@
 import React from 'react';
 import { InputRt } from 'app/components/InputRt';
 import { useSelector } from 'react-redux';
-import { io } from 'socket.io-client';
 import { useLoginSlice } from '../Login/slice';
 import { selectNomeUtente } from '../Login/slice/selectors';
 import styles from './styles.module.scss';
+import { Link } from 'react-router-dom';
 
-interface Props {}
-// const socket = io('https://real-time-try.onrender.com');
-const socket = io('http://localhost:7766');
+interface Props {
+  socket: any;
+}
 
 export function HomePage(props: Props) {
+  const { socket } = props;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   const [coloreValue, setColoreValue] = React.useState('');
@@ -37,14 +38,11 @@ export function HomePage(props: Props) {
     name: '',
     utente: '',
   });
-  console.log(
-    '🚀 ~ file: index.tsx:40 ~ HomePage ~ utenteFocusField',
-    utenteFocusField,
-  );
 
   React.useEffect(() => {
     socket.on('connect', () => {
       console.log('Server connected: ', socket.id);
+      console.log('socket connected: ', socket.id);
     });
     socket.on('ricevo-value', (value, name, utente) => {
       console.log('ricevo-value', value, name, utente);
@@ -70,6 +68,8 @@ export function HomePage(props: Props) {
 
   return (
     <>
+      <Link to="/schede_articoli">SCHEDE ARTICOLI</Link>
+
       <div className={styles.container}>
         <p style={{ color: 'white' }}>Inserisci info...</p>
         <form onSubmit={e => submit(e)}>
@@ -82,6 +82,7 @@ export function HomePage(props: Props) {
             utenteFocusField={utenteFocusField}
             cittaUtenteValue={cittaUtenteValue}
             setCittaUtenteValue={setCittaUtenteValue}
+            socket={socket}
           />
           <input type="submit" value="invia" />
         </form>
@@ -106,6 +107,7 @@ function Article({
   utenteFocusField,
   cittaUtenteValue,
   setCittaUtenteValue,
+  socket,
 }) {
   return (
     <>

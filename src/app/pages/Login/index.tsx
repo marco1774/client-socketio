@@ -32,9 +32,9 @@ export function Login(props: Props) {
           className={styles.btn}
           type="button"
           onClick={() => {
-            if (!inputValue) return null;
+            if (!inputValue || /^[\s]*$/.test(inputValue)) return null;
             dispatch(actions.setNomeUtente(inputValue));
-            navigate('/homepage');
+            navigate('/schede_articoli');
           }}
         >
           Invia
