@@ -14,17 +14,20 @@ interface Props {
   skipPageReset: any;
   artId: any;
   socket: any;
+  nomeUtente: any;
 }
 
 // Create an editable cell renderer
-const EditableCell = ({
-  value: initialValue,
-  row: { index },
-  column: { id },
-  updateMyData, // This is a custom function that we supplied to our table instance
-  artId,
-  socket,
-}) => {
+const EditableCell = props => {
+  const {
+    value: initialValue,
+    row: { index: row },
+    column: { id: column },
+    updateMyData, // This is a custom function that we supplied to our table instance
+    artId,
+    socket,
+    nomeUtente,
+  } = props;
   // We need to keep and update the state of the cell normally
   const [value, setValue] = React.useState(initialValue);
 
@@ -36,12 +39,12 @@ const EditableCell = ({
   const onBlur = () => {
     console.log('onBlur');
     socket.emit('blurInput', 'emesso onBlur');
-    updateMyData(index, id, value, artId);
+    updateMyData(row, column, value, artId);
   };
 
   const onFocus = () => {
     console.log('onFocus');
-    socket.emit('focusInput', id, index, artId);
+    socket.emit('focusInput', column, row, artId, nomeUtente);
   };
 
   // If the initialValue is changed external, sync it up with our state
@@ -50,7 +53,7 @@ const EditableCell = ({
   }, [initialValue]);
 
   //rende non editabile la colonna tipo
-  if (id === 'tipo') return value;
+  if (column === 'tipo') return value;
 
   return (
     <input
@@ -63,7 +66,15 @@ const EditableCell = ({
 };
 
 export function EditableTable(props: Props) {
-  const { columns, data, updateMyData, skipPageReset, artId, socket } = props;
+  const {
+    columns,
+    data,
+    updateMyData,
+    skipPageReset,
+    artId,
+    socket,
+    nomeUtente,
+  } = props;
 
   // Set our editable cell renderer as the default Cell renderer
   const defaultColumn = {
@@ -100,6 +111,7 @@ export function EditableTable(props: Props) {
       updateMyData,
       artId,
       socket,
+      nomeUtente,
     },
     /*    usePagination */
   );
@@ -125,8 +137,21 @@ export function EditableTable(props: Props) {
               return (
                 <tr {...row.getRowProps()}>
                   {row.cells.map(cell => {
+                    console.log(artId, cell.column.id, cell.row.id);
                     return (
-                      <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                      <td
+                        style={{
+                          outline:
+                            artId === 4 &&
+                            cell.column.id === '15-1' &&
+                            cell.row.id === '0'
+                              ? '3px solid red'
+                              : '',
+                        }}
+                        {...cell.getCellProps()}
+                      >
+                        {cell.render('Cell')}
+                      </td>
                     );
                   })}
                 </tr>

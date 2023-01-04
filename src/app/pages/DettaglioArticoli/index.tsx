@@ -5,7 +5,10 @@
  */
 import { EditableTable } from 'app/components/EditableTable';
 import * as React from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useLoginSlice } from '../Login/slice';
+import { selectNomeUtente } from '../Login/slice/selectors';
 import articoli from './dataListaArt.json';
 
 interface Props {
@@ -17,6 +20,9 @@ export function DettaglioArticoli(props: Props) {
   const [data, setData] = React.useState(articoli);
   const [originalData] = React.useState(data);
   const [skipPageReset, setSkipPageReset] = React.useState(false);
+  const loginAction = useLoginSlice();
+
+  const nomeUtente = useSelector(selectNomeUtente);
 
   const updateMyData = (rowIndex, columnId, value, artId) => {
     // We also turn on the flag to not reset the page
@@ -48,15 +54,25 @@ export function DettaglioArticoli(props: Props) {
     socket.on('ricevo-value', (value, name, utente) => {
       console.log('ricevo-value', value, name, utente);
     });
-    socket.on('ricevo-focusInput', (data, name, utente) => {
-      console.log('ricevo-focusInput', data, name, utente);
+    socket.on('ricevo-focusInput', (column, row, artId, nomeUtente) => {
+      console.log(
+        'ricevo-focusInput',
+        'column',
+        column,
+        'row',
+        row,
+        'artId',
+        artId,
+        'nomeUtente',
+        nomeUtente,
+      );
     });
 
     return () => {
       socket.off('connect');
       socket.off('disconnect');
       socket.off('prova');
-      socket.off('input');
+      socket.off('blurInput');
       socket.off('focusInput');
       socket.off('ricevo-value');
       socket.off('ricevo-focusInput');
@@ -88,6 +104,7 @@ export function DettaglioArticoli(props: Props) {
                   updateMyData={updateMyData}
                   skipPageReset={skipPageReset}
                   socket={socket}
+                  nomeUtente={nomeUtente}
                 />
               </div>
             </div>
