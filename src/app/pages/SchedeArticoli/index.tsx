@@ -17,7 +17,7 @@ export function SchedeArticoli(props: Props) {
       }}
     >
       <h1>VISUALIZZAZIONE SCHEDE ARTICOLI</h1>
-      <Link to="/homepage">DETTAGLIO ARTICOLI</Link>
+      <Link to="/dettaglio_articoli">DETTAGLIO ARTICOLI</Link>
     </div>
   );
 }

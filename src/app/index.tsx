@@ -22,6 +22,7 @@ import { SchedeArticoli } from './pages/SchedeArticoli';
 import { useSelector } from 'react-redux';
 import { selectNomeUtente } from './pages/Login/slice/selectors';
 import { useLoginSlice } from './pages/Login/slice';
+import { DettaglioArticoli } from './pages/DettaglioArticoli';
 
 // const socket = io('https://real-time-try.onrender.com');
 const socket = io('http://localhost:7766');
@@ -35,6 +36,7 @@ export function App() {
         <Route path="/" element={<Login />} />
         <Route path="/homepage" element={<HomePage socket={socket} />} />
         <Route path="/schede_articoli" element={<SchedeArticoli />} />
+        <Route path="/dettaglio_articoli" element={<DettaglioArticoli />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <GlobalStyle />
