@@ -13,6 +13,7 @@ interface Props {
   updateMyData: any;
   skipPageReset: any;
   artId: any;
+  socket: any;
 }
 
 // Create an editable cell renderer
@@ -22,6 +23,7 @@ const EditableCell = ({
   column: { id },
   updateMyData, // This is a custom function that we supplied to our table instance
   artId,
+  socket,
 }) => {
   // We need to keep and update the state of the cell normally
   const [value, setValue] = React.useState(initialValue);
@@ -32,8 +34,14 @@ const EditableCell = ({
 
   // We'll only update the external data when the input is blurred
   const onBlur = () => {
-    console.log('chiamato unblur');
+    console.log('onBlur');
+    socket.emit('blurInput', 'emesso onBlur');
     updateMyData(index, id, value, artId);
+  };
+
+  const onFocus = () => {
+    console.log('onFocus');
+    socket.emit('focusInput', id, index, artId);
   };
 
   // If the initialValue is changed external, sync it up with our state
@@ -44,11 +52,18 @@ const EditableCell = ({
   //rende non editabile la colonna tipo
   if (id === 'tipo') return value;
 
-  return <input value={value} onChange={onChange} onBlur={onBlur} />;
+  return (
+    <input
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
+      onFocus={onFocus}
+    />
+  );
 };
 
 export function EditableTable(props: Props) {
-  const { columns, data, updateMyData, skipPageReset, artId } = props;
+  const { columns, data, updateMyData, skipPageReset, artId, socket } = props;
 
   // Set our editable cell renderer as the default Cell renderer
   const defaultColumn = {
@@ -84,6 +99,7 @@ export function EditableTable(props: Props) {
       // cell renderer!
       updateMyData,
       artId,
+      socket,
     },
     /*    usePagination */
   );
@@ -150,6 +166,7 @@ const Styles = styled.div`
       }
 
       input {
+        width: 60px;
         font-size: 1rem;
         padding: 0;
         margin: 0;

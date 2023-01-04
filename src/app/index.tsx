@@ -36,7 +36,10 @@ export function App() {
         <Route path="/" element={<Login />} />
         <Route path="/homepage" element={<HomePage socket={socket} />} />
         <Route path="/schede_articoli" element={<SchedeArticoli />} />
-        <Route path="/dettaglio_articoli" element={<DettaglioArticoli />} />
+        <Route
+          path="/dettaglio_articoli"
+          element={<DettaglioArticoli socket={socket} />}
+        />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <GlobalStyle />

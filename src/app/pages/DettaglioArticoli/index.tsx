@@ -8,49 +8,17 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import articoli from './dataListaArt.json';
 
-interface Props {}
+interface Props {
+  socket: any;
+}
 
 export function DettaglioArticoli(props: Props) {
-  /*  const columns = [
-    {
-      Header: '15-1',
-      accessor: '15-1',
-    },
-    {
-      Header: '31-1',
-      accessor: '31-1',
-    },
-    {
-      Header: '15-2',
-      accessor: '15-2',
-    },
-    {
-      Header: '29-2',
-      accessor: '29-2',
-    },
-    {
-      Header: '15-3',
-      accessor: '15-3',
-    },
-    {
-      Header: '30-3',
-      accessor: '30-3',
-    },
-  ];
- */
+  const { socket } = props;
   const [data, setData] = React.useState(articoli);
-  console.log('🚀 ~ file: index.tsx:46 ~ DettaglioArticoli ~ data', data);
   const [originalData] = React.useState(data);
   const [skipPageReset, setSkipPageReset] = React.useState(false);
 
   const updateMyData = (rowIndex, columnId, value, artId) => {
-    console.log(
-      '🚀 ~ file: index.tsx:50 ~ updateMyData ~ rowIndex, columnId, value, artId',
-      rowIndex,
-      columnId,
-      value,
-      artId,
-    );
     // We also turn on the flag to not reset the page
     setSkipPageReset(true);
     setData((old: any) => {
@@ -73,8 +41,30 @@ export function DettaglioArticoli(props: Props) {
     });
   };
 
+  React.useEffect(() => {
+    socket.on('connect', () => {
+      console.log('Server connected: ', socket.id);
+    });
+    socket.on('ricevo-value', (value, name, utente) => {
+      console.log('ricevo-value', value, name, utente);
+    });
+    socket.on('ricevo-focusInput', (data, name, utente) => {
+      console.log('ricevo-focusInput', data, name, utente);
+    });
+
+    return () => {
+      socket.off('connect');
+      socket.off('disconnect');
+      socket.off('prova');
+      socket.off('input');
+      socket.off('focusInput');
+      socket.off('ricevo-value');
+      socket.off('ricevo-focusInput');
+    };
+  }, []);
+
   return (
-    <>
+    <div style={{ backgroundColor: 'white' }}>
       <div>
         <h1>Dettaglio articoli</h1>
         <Link to="/schede_articoli">SCHEDE ARTICOLI</Link>
@@ -97,12 +87,13 @@ export function DettaglioArticoli(props: Props) {
                   data={art.dati}
                   updateMyData={updateMyData}
                   skipPageReset={skipPageReset}
+                  socket={socket}
                 />
               </div>
             </div>
           );
         })}
       </div>
-    </>
+    </div>
   );
 }
