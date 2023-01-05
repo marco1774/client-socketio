@@ -15,6 +15,7 @@ interface Props {
   artId: any;
   socket: any;
   nomeUtente: any;
+  focusEvent: any;
 }
 
 // Create an editable cell renderer
@@ -38,7 +39,7 @@ const EditableCell = props => {
   // We'll only update the external data when the input is blurred
   const onBlur = () => {
     console.log('onBlur');
-    socket.emit('blurInput', 'emesso onBlur');
+    socket.emit('blurInput', nomeUtente);
     updateMyData(row, column, value, artId);
   };
 
@@ -74,29 +75,14 @@ export function EditableTable(props: Props) {
     artId,
     socket,
     nomeUtente,
+    focusEvent,
   } = props;
 
   // Set our editable cell renderer as the default Cell renderer
   const defaultColumn = {
     Cell: EditableCell,
   };
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-    /* page,
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    setPageSize, 
-    state: { pageIndex, pageSize }*/
-  } = useTable(
+  const ogt = useTable(
     {
       columns,
       data,
@@ -115,6 +101,12 @@ export function EditableTable(props: Props) {
     },
     /*    usePagination */
   );
+  console.log('🚀 ~ file: index.tsx:104 ~ ogt', ogt);
+
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    ogt;
+  const res = focusEvent.find(art => art.artId === artId);
+  console.log('🚀 ~ file: index.tsx:128 ~ {rows.map ~ res', res);
 
   return (
     <Styles>
@@ -137,17 +129,18 @@ export function EditableTable(props: Props) {
               return (
                 <tr {...row.getRowProps()}>
                   {row.cells.map(cell => {
-                    console.log(artId, cell.column.id, cell.row.id);
                     return (
                       <td
-                        style={{
-                          outline:
-                            artId === 4 &&
-                            cell.column.id === '15-1' &&
-                            cell.row.id === '0'
-                              ? '3px solid red'
-                              : '',
-                        }}
+                        style={
+                          res &&
+                          artId === res.artId &&
+                          cell.column.id === res.column.toString() &&
+                          cell.row.id === res.row.toString()
+                            ? {
+                                outline: '3px solid red',
+                              }
+                            : {}
+                        }
                         {...cell.getCellProps()}
                       >
                         {cell.render('Cell')}
@@ -171,18 +164,21 @@ const Styles = styled.div`
     border-spacing: 0;
     border: 1px solid black;
 
-    tr {
-      :last-child {
-        td {
-          border-bottom: 0;
-        }
-      }
+    // tr {
+    //   :last-child {
+    //     td {
+    //       border-bottom: 0;
+    //     }
+    //   }
+    // }
+    tr td:nth-child(even) {
+      background-color: #cecece;
     }
 
     th,
-    td {
+    td:nth-child(even) {
       margin: 0;
-      padding: 0.5rem;
+      padding: 0.25rem;
       border-bottom: 1px solid black;
       border-right: 1px solid black;
 
@@ -196,6 +192,27 @@ const Styles = styled.div`
         padding: 0;
         margin: 0;
         border: 0;
+        background-color: #cecece;
+      }
+    }
+    th,
+    td:nth-child(odd) {
+      margin: 0;
+      padding: 0.25rem;
+      border-bottom: 1px solid black;
+      border-right: 1px solid black;
+
+      :last-child {
+        border-right: 0;
+      }
+
+      input {
+        width: 60px;
+        font-size: 1rem;
+        padding: 0;
+        margin: 0;
+        border: 0;
+        background-color: #fff;
       }
     }
   }

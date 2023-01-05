@@ -4,6 +4,7 @@
  *
  */
 import { EditableTable } from 'app/components/EditableTable';
+import { debug } from 'console';
 import * as React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -21,8 +22,12 @@ export function DettaglioArticoli(props: Props) {
   const [originalData] = React.useState(data);
   const [skipPageReset, setSkipPageReset] = React.useState(false);
   const loginAction = useLoginSlice();
-
   const nomeUtente = useSelector(selectNomeUtente);
+  const [focusEvent, setFocusEvent] = React.useState<any>([]);
+  console.log(
+    '🚀 ~ file: index.tsx:26 ~ DettaglioArticoli ~ focusEvent',
+    focusEvent,
+  );
 
   const updateMyData = (rowIndex, columnId, value, artId) => {
     // We also turn on the flag to not reset the page
@@ -51,9 +56,14 @@ export function DettaglioArticoli(props: Props) {
     socket.on('connect', () => {
       console.log('Server connected: ', socket.id);
     });
-    socket.on('ricevo-value', (value, name, utente) => {
-      console.log('ricevo-value', value, name, utente);
+
+    socket.on('ricevo-value', nomeUtente => {
+      console.log('ricevo-value', nomeUtente);
+      setFocusEvent(prev => {
+        return prev.filter(e => e.nome !== nomeUtente);
+      });
     });
+
     socket.on('ricevo-focusInput', (column, row, artId, nomeUtente) => {
       console.log(
         'ricevo-focusInput',
@@ -66,18 +76,44 @@ export function DettaglioArticoli(props: Props) {
         'nomeUtente',
         nomeUtente,
       );
+      setFocusEvent(prev => {
+        if (prev.some(e => e.nome === nomeUtente)) {
+          prev.filter(e => e.nome !== nomeUtente);
+          return [...prev, { nome: nomeUtente, column, row, artId }];
+        } else {
+          return [...prev, { nome: nomeUtente, column, row, artId }];
+        }
+      });
     });
 
     return () => {
-      socket.off('connect');
-      socket.off('disconnect');
-      socket.off('prova');
-      socket.off('blurInput');
-      socket.off('focusInput');
-      socket.off('ricevo-value');
-      socket.off('ricevo-focusInput');
+      // socket.off('connect');
+      // socket.off('disconnect');
+      // socket.off('prova');
+      // socket.off('blurInput');
+      // socket.off('focusInput');
+      // socket.off('ricevo-value');
+      // socket.off('ricevo-focusInput');
+      // socket.off('utente_connesso');
+      socket.removeAllListeners();
     };
   }, []);
+
+  // const listColunm = {};
+  // data.forEach(art => {
+  //   return (listColunm[art.id] = art.colonne.map(e => {
+  //     return {
+  //       Header: e,
+  //       accessor: e,
+  //     };
+  //   }));
+  // });
+
+  let listColumn = data.reduce((acc, art) => {
+    acc[art.id] = [...art.colonne.map(e => ({ Header: e, accessor: e }))];
+
+    return acc;
+  }, {});
 
   return (
     <div style={{ backgroundColor: 'white' }}>
@@ -87,24 +123,26 @@ export function DettaglioArticoli(props: Props) {
       </div>
       <div>
         {data.map((art, i) => {
-          const columns = art.colonne.map(e => {
-            return {
-              Header: e,
-              accessor: e,
-            };
-          });
+          // const columns = art.colonne.map(e => {
+          //   return {
+          //     Header: e,
+          //     accessor: e,
+          //   };
+          // });
+
           return (
             <div style={{ display: 'flex', width: '100%' }}>
               <div style={{ width: '10%' }}>{art.nomeArt}</div>
               <div style={{ width: '80%' }}>
                 <EditableTable
                   artId={art.id}
-                  columns={columns}
+                  columns={listColumn[+art.id]}
                   data={art.dati}
                   updateMyData={updateMyData}
                   skipPageReset={skipPageReset}
                   socket={socket}
                   nomeUtente={nomeUtente}
+                  focusEvent={focusEvent}
                 />
               </div>
             </div>
