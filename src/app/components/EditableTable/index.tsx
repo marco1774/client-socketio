@@ -16,6 +16,7 @@ interface Props {
   socket: any;
   nomeUtente: any;
   focusEvent: any;
+  coloreUtente: any;
 }
 
 // Create an editable cell renderer
@@ -28,6 +29,7 @@ const EditableCell = props => {
     artId,
     socket,
     nomeUtente,
+    coloreUtente,
   } = props;
   // We need to keep and update the state of the cell normally
   const [value, setValue] = React.useState(initialValue);
@@ -45,7 +47,7 @@ const EditableCell = props => {
 
   const onFocus = () => {
     console.log('onFocus');
-    socket.emit('focusInput', column, row, artId, nomeUtente);
+    socket.emit('focusInput', column, row, artId, coloreUtente, nomeUtente);
   };
 
   // If the initialValue is changed external, sync it up with our state
@@ -76,8 +78,9 @@ export function EditableTable(props: Props) {
     socket,
     nomeUtente,
     focusEvent,
+    coloreUtente,
   } = props;
-  console.log('%cRENDER', 'color:red');
+  console.log('%cRENDER', 'color:red', focusEvent);
   // Set our editable cell renderer as the default Cell renderer
   const defaultColumn = {
     Cell: EditableCell,
@@ -98,6 +101,7 @@ export function EditableTable(props: Props) {
       artId,
       socket,
       nomeUtente,
+      coloreUtente,
     },
     /*    usePagination */
   );
@@ -142,7 +146,10 @@ export function EditableTable(props: Props) {
                           cell.column.id === res.column.toString() &&
                           cell.row.id === res.row.toString()
                             ? {
-                                outline: '3px solid red',
+                                outlineWidth: '3px',
+                                outlineOffset: '-3px',
+                                outlineStyle: 'solid',
+                                outlineColor: [focusEvent[0].coloreUtente],
                               }
                             : {}
                         }

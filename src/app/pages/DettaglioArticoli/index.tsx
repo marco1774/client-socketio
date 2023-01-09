@@ -24,6 +24,7 @@ export function DettaglioArticoli(props: Props) {
   const loginAction = useLoginSlice();
   const nomeUtente = useSelector(selectNomeUtente);
   const [focusEvent, setFocusEvent] = React.useState<any>([]);
+  const [coloreUtente, setColoreUtente] = React.useState('');
 
   /*  let focusEvent = [
     { nome: 'iPhone ', column: '31-1', row: 2, artId: 10 },
@@ -58,6 +59,11 @@ export function DettaglioArticoli(props: Props) {
     socket.on('connect', () => {
       console.log('Server connected: ', socket.id);
     });
+    socket.emit('nomeUtente', nomeUtente);
+    socket.on('mandaColoreUtente', colore => {
+      console.log('mandaColoreUtente', colore);
+      setColoreUtente(colore.colore);
+    });
 
     socket.on('ricevo-value', nomeUtente => {
       console.log('ricevo-value', nomeUtente);
@@ -66,29 +72,41 @@ export function DettaglioArticoli(props: Props) {
       });
     });
 
-    socket.on('ricevo-focusInput', (column, row, artId, nomeUtente) => {
-      console.log(
-        'ricevo-focusInput',
-        'column',
-        column,
-        'row',
-        row,
-        'artId',
-        artId,
-        'nomeUtente',
-        nomeUtente,
-      );
-      setFocusEvent(prev => {
-        if (prev.some(e => e.nome === nomeUtente)) {
-          prev.filter(e => e.nome !== nomeUtente);
-          return [...prev, { nome: nomeUtente, column, row, artId }];
-        } else {
-          return [...prev, { nome: nomeUtente, column, row, artId }];
-        }
-      });
-    });
+    socket.on(
+      'ricevo-focusInput',
+      (column, row, artId, coloreUtente, nomeUtente) => {
+        console.log(
+          'ricevo-focusInput',
+          'column',
+          column,
+          'row',
+          row,
+          'artId',
+          artId,
+          'nomeUtente',
+          nomeUtente,
+          'coloreUtente',
+          coloreUtente,
+        );
+        setFocusEvent(prev => {
+          if (prev.some(e => e.nome === nomeUtente)) {
+            prev.filter(e => e.nome !== nomeUtente);
+            return [
+              ...prev,
+              { nome: nomeUtente, column, row, artId, coloreUtente },
+            ];
+          } else {
+            return [
+              ...prev,
+              { nome: nomeUtente, column, row, artId, coloreUtente },
+            ];
+          }
+        });
+      },
+    );
 
     return () => {
+      socket.emit('utenteDisconnesso', nomeUtente);
       // socket.off('connect');
       // socket.off('disconnect');
       // socket.off('prova');
@@ -145,6 +163,7 @@ export function DettaglioArticoli(props: Props) {
                   socket={socket}
                   nomeUtente={nomeUtente}
                   focusEvent={focusEvent}
+                  coloreUtente={coloreUtente}
                 />
               </div>
             </div>
