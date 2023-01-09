@@ -106,7 +106,10 @@ export function DettaglioArticoli(props: Props) {
     );
 
     return () => {
-      socket.emit('utenteDisconnesso', nomeUtente);
+      socket.on('disconnect', () => {
+        socket.emit('utenteDisconnesso', nomeUtente);
+      });
+
       // socket.off('connect');
       // socket.off('disconnect');
       // socket.off('prova');
