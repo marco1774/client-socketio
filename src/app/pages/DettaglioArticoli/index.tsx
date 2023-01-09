@@ -24,10 +24,12 @@ export function DettaglioArticoli(props: Props) {
   const loginAction = useLoginSlice();
   const nomeUtente = useSelector(selectNomeUtente);
   const [focusEvent, setFocusEvent] = React.useState<any>([]);
-  console.log(
-    '🚀 ~ file: index.tsx:26 ~ DettaglioArticoli ~ focusEvent',
-    focusEvent,
-  );
+
+  /*  let focusEvent = [
+    { nome: 'iPhone ', column: '31-1', row: 2, artId: 10 },
+    { nome: 'iPhone ', column: '15-2', row: 1, artId: 10 },
+    { nome: 'iPhone ', column: '15-2', row: 0, artId: 10 },
+  ]; */
 
   const updateMyData = (rowIndex, columnId, value, artId) => {
     // We also turn on the flag to not reset the page

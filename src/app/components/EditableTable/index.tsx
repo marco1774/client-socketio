@@ -77,7 +77,7 @@ export function EditableTable(props: Props) {
     nomeUtente,
     focusEvent,
   } = props;
-
+  console.log('%cRENDER', 'color:red');
   // Set our editable cell renderer as the default Cell renderer
   const defaultColumn = {
     Cell: EditableCell,
@@ -101,12 +101,10 @@ export function EditableTable(props: Props) {
     },
     /*    usePagination */
   );
-  console.log('🚀 ~ file: index.tsx:104 ~ ogt', ogt);
+  // console.log('🚀 ~ file: index.tsx:104 ~ ogt', ogt);
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     ogt;
-  const res = focusEvent.find(art => art.artId === artId);
-  console.log('🚀 ~ file: index.tsx:128 ~ {rows.map ~ res', res);
 
   return (
     <Styles>
@@ -129,6 +127,13 @@ export function EditableTable(props: Props) {
               return (
                 <tr {...row.getRowProps()}>
                   {row.cells.map(cell => {
+                    const res = focusEvent.filter(art => {
+                      return (
+                        art.artId === artId &&
+                        art.column.toString() === cell.column.id &&
+                        art.row.toString() === cell.row.id
+                      );
+                    })[0];
                     return (
                       <td
                         style={
