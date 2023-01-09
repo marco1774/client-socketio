@@ -150,11 +150,29 @@ export function EditableTable(props: Props) {
                                 outlineOffset: '-3px',
                                 outlineStyle: 'solid',
                                 outlineColor: [focusEvent[0].coloreUtente],
+                                position: 'relative',
                               }
                             : {}
                         }
                         {...cell.getCellProps()}
                       >
+                        {res &&
+                          artId === res.artId &&
+                          cell.column.id === res.column.toString() &&
+                          cell.row.id === res.row.toString() && (
+                            <div
+                              style={{
+                                position: 'absolute',
+                                top: '-21px',
+                                left: '0',
+                                color: focusEvent[0].coloreUtente,
+
+                                padding: '0 2px',
+                              }}
+                            >
+                              {focusEvent[0].nome}
+                            </div>
+                          )}
                         {cell.render('Cell')}
                       </td>
                     );
