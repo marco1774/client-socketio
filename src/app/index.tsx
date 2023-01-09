@@ -24,8 +24,8 @@ import { selectNomeUtente } from './pages/Login/slice/selectors';
 import { useLoginSlice } from './pages/Login/slice';
 import { DettaglioArticoli } from './pages/DettaglioArticoli';
 
-// const socket = io('https://real-time-try.onrender.com');
-const socket = io('http://localhost:7766');
+const socket = io('https://real-time-try.onrender.com');
+// const socket = io('http://localhost:7766');
 
 export function App() {
   // const { i18n } = useTranslation();
