@@ -138,6 +138,7 @@ export function EditableTable(props: Props) {
                         art.row.toString() === cell.row.id
                       );
                     })[0];
+                    console.log('🚀 ~ file: index.tsx:141 ~ res ~ res', res);
                     return (
                       <td
                         style={
@@ -149,7 +150,7 @@ export function EditableTable(props: Props) {
                                 outlineWidth: '3px',
                                 outlineOffset: '-3px',
                                 outlineStyle: 'solid',
-                                outlineColor: [focusEvent[0].coloreUtente],
+                                outlineColor: [res.coloreUtente],
                                 position: 'relative',
                               }
                             : {}
@@ -165,12 +166,12 @@ export function EditableTable(props: Props) {
                                 position: 'absolute',
                                 top: '-21px',
                                 left: '0',
-                                color: focusEvent[0].coloreUtente,
-
+                                color: res.coloreUtente,
+                                fontWeight: 'bold',
                                 padding: '0 2px',
                               }}
                             >
-                              {focusEvent[0].nome}
+                              {res.nome}
                             </div>
                           )}
                         {cell.render('Cell')}

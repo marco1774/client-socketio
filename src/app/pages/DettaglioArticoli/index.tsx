@@ -56,9 +56,11 @@ export function DettaglioArticoli(props: Props) {
   };
 
   React.useEffect(() => {
-    socket.on('connect', () => {
-      console.log('Server connected: ', socket.id);
-    });
+    // socket.on('connection', socket => {
+    //   console.log('server connected: ', socket.id);
+    // });
+    console.log('Server connected: ', socket.id);
+
     socket.emit('nomeUtente', nomeUtente);
     socket.on('mandaColoreUtente', colore => {
       console.log('mandaColoreUtente', colore);
@@ -120,7 +122,7 @@ export function DettaglioArticoli(props: Props) {
       // socket.off('utente_connesso');
       socket.removeAllListeners();
     };
-  }, []);
+  }, [socket]);
 
   // const listColunm = {};
   // data.forEach(art => {
